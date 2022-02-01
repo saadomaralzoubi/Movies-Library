@@ -14,6 +14,8 @@ app.get("/", dataHandler);
 app.get("/favorite", favHandler);
 app.get("/trending", trendHandler);
 app.get("/searchmovie", searchHandler);
+app.get("/genre", genrehHandler);
+app.get("/popular", popularthHandler);
 
 app.listen(3000, () => {
   console.log("Listen to port 3000");
@@ -78,12 +80,36 @@ function searchHandler(req, res) {
   let trendmovies = [];
   axios
     .get(
-      `https://api.themoviedb.org/3/trending/all/week?api_key=${APIKEY}&query=${searchQuery}`
+      `https://api.themoviedb.org/3/search/movie?api_key=${APIKEY}&query=${searchQuery}`
     )
     .then((value) => {
       value.data.results.forEach((trender) => {
         trendmovies.push(trender);
       });
       return res.status(200).json(trendmovies);
+    });
+}
+
+function genrehHandler(req, res) {
+  let genrearry = [];
+  axios
+    .get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${APIKEY}`)
+    .then((value) => {
+      value.data.genres.forEach((genre) => {
+        genrearry.push(genre);
+      });
+      return res.status(200).json(genrearry);
+    });
+}
+function popularthHandler(req, res) {
+  axios;
+  let populararry = [];
+  axios
+    .get(`https://api.themoviedb.org/3/movie/popular?api_key=${APIKEY}`)
+    .then((value) => {
+      value.data.results.forEach((popular) => {
+        populararry.push(popular);
+      });
+      return res.status(200).json(populararry);
     });
 }
