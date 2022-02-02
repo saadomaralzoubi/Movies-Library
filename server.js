@@ -4,9 +4,15 @@ const app = express();
 
 const axios = require("axios");
 const dotenv = require("dotenv");
+const pg = require("pg");
 
 dotenv.config();
+const DATABASE_URL = process.env.DATABASE_URL;
+const client = new pg.Client(DATABASE_URL);
+console.log(DATABASE_URL);
+
 const APIKEY = process.env.APIKEY;
+app.use(express.json());
 
 const movieData = require("./Movie Data/data.json");
 
@@ -16,10 +22,8 @@ app.get("/trending", trendHandler);
 app.get("/searchmovie", searchHandler);
 app.get("/genre", genrehHandler);
 app.get("/popular", popularthHandler);
-
-app.listen(3000, () => {
-  console.log("Listen to port 3000");
-});
+app.post("/addMovie", addHandler);
+app.get("/getMovies", getHandler);
 
 function movie(title, poster_path, overview) {
   this.title = title;
@@ -113,3 +117,31 @@ function popularthHandler(req, res) {
       return res.status(200).json(populararry);
     });
 }
+
+function addHandler(req, res) {
+  let movie = req.body;
+  const sql = `INSERT INTO movielist(title,release_date,poster_path,overview,comment) VALUES($1, $2, $3, $4, $5) RETURNING * ;`;
+  let values = [
+    movie.title,
+    movie.release_date,
+    movie.poster_path,
+    movie.overview,
+    movie.comment,
+  ];
+  client.query(sql, values).then((data) => {
+    return res.status(201).json(data.rows);
+  });
+}
+
+function getHandler(req, res) {
+  const sql = `SELECT * FROM movielist`;
+  client.query(sql).then((data) => {
+    return res.status(200).json(data.rows);
+  });
+}
+
+client.connect().then(() => {
+  app.listen(3000, () => {
+    console.log("Listen to port 3000");
+  });
+});
