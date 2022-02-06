@@ -25,6 +25,10 @@ app.get("/popular", popularthHandler);
 app.post("/addMovie", addHandler);
 app.get("/getMovies", getHandler);
 
+app.get("/getMovies/:id", getIdHandler);
+app.put("/UPDATE/:id", updateHandler);
+app.delete("/DELETE/:id", deleteHandler);
+
 function movie(title, poster_path, overview) {
   this.title = title;
   this.poster_path = poster_path;
@@ -137,6 +141,36 @@ function getHandler(req, res) {
   const sql = `SELECT * FROM movielist`;
   client.query(sql).then((data) => {
     return res.status(200).json(data.rows);
+  });
+}
+
+function getIdHandler(req, res) {
+  let id = req.params.id;
+  const sql = `SELECT * FROM movielist WHERE id=${id}`;
+  client.query(sql).then((data) => {
+    return res.status(200).json(data.rows);
+  });
+}
+
+function updateHandler(req, res) {
+  let id = req.params.id;
+  const movie = req.body;
+
+  const sql = `UPDATE movielist SET comment=$1 WHERE id=${id} RETURNING *;`;
+  const values = [movie.comment];
+
+  client.query(sql, values).then((data) => {
+    return res.status(200).json(data.rows);
+  });
+}
+
+function deleteHandler(req, res) {
+  const id = req.params.id;
+
+  const sql = `DELETE FROM movielist WHERE id=${id};`;
+
+  client.query(sql).then(() => {
+    return res.status(204).json([]);
   });
 }
 
