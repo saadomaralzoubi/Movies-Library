@@ -6,14 +6,15 @@ const axios = require("axios");
 const dotenv = require("dotenv");
 const pg = require("pg");
 
+dotenv.config();
+
 const DATABASE_URL = process.env.DATABASE_URL;
+const PORT = process.env.PORT;
 
 const client = new pg.Client({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 });
-dotenv.config();
-console.log(DATABASE_URL);
 
 const APIKEY = process.env.APIKEY;
 app.use(express.json());
@@ -179,7 +180,7 @@ function deleteHandler(req, res) {
 }
 
 client.connect().then(() => {
-  app.listen(3000, () => {
+  app.listen(PORT, () => {
     console.log("Listen to port 3000");
   });
 });
