@@ -1,10 +1,10 @@
-DROP TABLE IF EXISTS movielist;
 
-CREATE TABLE IF NOT EXISTS movielist(
+
+CREATE TABLE IF NOT EXISTS movieslist(
     id SERIAL PRIMARY KEY,
-    title VARCHAR(100),
-    release_date VARCHAR(500),
-    poster_path VARCHAR(500),
+    title VARCHAR(255),
+    release_date VARCHAR(10000),
+    poster_path VARCHAR(10000),
     overview VARCHAR(255),
     comment VARCHAR(255)
 )
