@@ -1,13 +1,14 @@
 `use strict`;
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 const axios = require("axios");
 const dotenv = require("dotenv");
 const pg = require("pg");
 
 dotenv.config();
-
+app.use(cors());
 const DATABASE_URL = process.env.DATABASE_URL;
 const PORT = process.env.PORT;
 
